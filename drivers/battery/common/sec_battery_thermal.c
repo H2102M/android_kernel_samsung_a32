@@ -885,14 +885,21 @@ void sec_bat_thermal_check(struct sec_battery_info *battery)
 				SEC_BAT_CURRENT_EVENT_SWELLING_MODE);
 			break;
 		case BAT_THERMAL_COLD:
+			// battery->usb_thm_status = USB_THM_NORMAL;
+			// battery->cold_cool3_thresh += THERMAL_HYSTERESIS_2;
+			// battery->cool3_cool2_thresh += THERMAL_HYSTERESIS_2;
+			// battery->cool2_cool1_thresh += THERMAL_HYSTERESIS_2;
+			// battery->cool1_normal_thresh += THERMAL_HYSTERESIS_2;
+			// sec_vote(battery->chgen_vote, VOTER_SWELLING, true, SEC_BAT_CHG_MODE_CHARGING_OFF);
+			// battery->health = POWER_SUPPLY_HEALTH_COLD;
+			// sec_bat_set_charging_status(battery, POWER_SUPPLY_STATUS_NOT_CHARGING);
 			battery->usb_thm_status = USB_THM_NORMAL;
-			battery->cold_cool3_thresh += THERMAL_HYSTERESIS_2;
-			battery->cool3_cool2_thresh += THERMAL_HYSTERESIS_2;
-			battery->cool2_cool1_thresh += THERMAL_HYSTERESIS_2;
-			battery->cool1_normal_thresh += THERMAL_HYSTERESIS_2;
-			sec_vote(battery->chgen_vote, VOTER_SWELLING, true, SEC_BAT_CHG_MODE_CHARGING_OFF);
-			battery->health = POWER_SUPPLY_HEALTH_COLD;
-			sec_bat_set_charging_status(battery, POWER_SUPPLY_STATUS_NOT_CHARGING);
+			sec_vote(battery->fcc_vote, VOTER_SWELLING, false, 0);
+			sec_vote(battery->fv_vote, VOTER_SWELLING, false, 0);
+			sec_vote(battery->topoff_vote, VOTER_SWELLING, false, 0);
+			sec_vote(battery->chgen_vote, VOTER_SWELLING, false, 0);
+			battery->health = POWER_SUPPLY_HEALTH_GOOD;
+			break;
 #if defined(CONFIG_BATTERY_CISD)
 			battery->cisd.data[CISD_DATA_UNSAFETY_TEMPERATURE]++;
 			battery->cisd.data[CISD_DATA_UNSAFE_TEMPERATURE_PER_DAY]++;
